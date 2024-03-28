@@ -1,41 +1,46 @@
 package com.kh.servlet.plan;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.kh.model.dao.PlanDao;
 import com.kh.model.dao.UserDao;
 import com.kh.model.vo.Plan;
 import com.kh.model.vo.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 @WebServlet("/plan/list")
 public class ListPlanServlet extends HttpServlet {
 
-  @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    HttpSession session = req.getSession();
-    Object writer = session.getAttribute("userId");
-    if (writer == null) {
-      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    User loginUser = new UserDao().findByUserId(String.valueOf(writer));
-    if (loginUser == null) {
-      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
+    request.setCharacterEncoding("utf-8");
+    response.setCharacterEncoding("utf-8");
+    response.setContentType("application/json");
+    HttpSession session = request.getSession();
+    String userId = (String)session.getAttribute("userId");
+//    String titleKeyword = request.getParameter("search");
+    
+    List<Plan> planList = new PlanDao().findByWriterOrderByEndDate(userId);
+    User loginUser = new UserDao().findByUserId(userId);
     JSONObject responseBody = new JSONObject();
     responseBody.put("nickname", loginUser.getNickname());
 
-    List<Plan> planList = new PlanDao().findByWriter(loginUser.getUserId());
     JSONArray jsonArray = new JSONArray();
     for (Plan plan : planList) {
       JSONObject planJson = new JSONObject();
@@ -49,9 +54,9 @@ public class ListPlanServlet extends HttpServlet {
     }
     responseBody.put("planList", jsonArray);
 
-    resp.setStatus(HttpServletResponse.SC_OK);
-    resp.getWriter().write(responseBody.toString());
-    resp.getWriter().flush();
-    resp.getWriter().close();
+    response.setStatus(HttpServletResponse.SC_OK);
+    response.getWriter().write(responseBody.toString());
+    response.getWriter().flush();
+    response.getWriter().close();
   }
 }
