@@ -13,7 +13,7 @@ import com.kh.model.dao.UserDao;
 import com.kh.model.vo.User;
 
 @WebServlet("/user/signup")
-public class SignupServlet extends HttpServlet {
+public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
