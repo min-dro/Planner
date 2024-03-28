@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.json.JSONObject;
 
 @WebServlet("/user/signup")
-public class SignUpServlet extends HttpServlet {
+public class SignupServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
