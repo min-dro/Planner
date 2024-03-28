@@ -43,7 +43,7 @@ function requestDuplicateUserId() {
 
 function requestDuplicateNickname() {
   let nickname = $("#nickname").val();
-  if (nicknameRegex.test(nickname)) {
+  if (!nicknameRegex.test(nickname)) {
     alert("닉네임은 3~20자의 한글, 영문, 숫자를 사용해야합니다.")
     return;
   }
